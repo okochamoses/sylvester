@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { hash } = require("./helper");
 
 const customerSchema = new mongoose.Schema({
   username: String,
@@ -7,6 +8,11 @@ const customerSchema = new mongoose.Schema({
   lastName: String,
   phoneNumber: String,
   password: String
+});
+
+customerSchema.pre("save", function(done) {
+  this.password = hash(this.password);
+  done();
 });
 
 const Customer = mongoose.model("customers", customerSchema);
