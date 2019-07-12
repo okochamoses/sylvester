@@ -1,11 +1,16 @@
 const express = require("express");
-const logger = require("morgan");
+const morgan = require("morgan");
+const dotenv = require("dotenv");
+const logger = require("./config/logger");
+
+dotenv.config();
+require("./config/db");
 
 const indexRouter = require("./routes/index");
 
 const app = express();
 
-app.use(logger("dev"));
+app.use(morgan("combined", { stream: logger.stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
