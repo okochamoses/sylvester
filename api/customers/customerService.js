@@ -44,3 +44,13 @@ exports.registerCustomer = async (req, res) => {
     return res.json({ code: 10, message: "Operation processing error" });
   }
 };
+
+exports.getCustomers = async (req, res) => {
+  try {
+    const customers = await customerRepo.findAll();
+    return res.json({ code: 0, data: customers });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
