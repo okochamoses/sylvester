@@ -2,6 +2,8 @@ const customerValidator = require("./customerValidation");
 const Customer = require("./Customer");
 const customerRepo = require("./repository");
 const logger = require("../../config/logger");
+const { hash, generatePassword } = require("./helper");
+const { sendMail, messages } = require("../../config/mailer");
 
 exports.registerCustomer = async (req, res) => {
   try {
@@ -49,6 +51,36 @@ exports.getCustomers = async (req, res) => {
   try {
     const customers = await customerRepo.findAll();
     return res.json({ code: 0, data: customers });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { body } = req;
+    let customer;
+    if (body.username !== undefined) {
+      customer = await customerRepo.findByUsername(body.username);
+    } else {
+      customer = await customerRepo.findByEmail(body.email);
+    }
+
+    // check if customer exists
+    if (!customer) {
+      return res.json({ code: 10, message: "We couldn't find a user matching those credentials!" });
+    }
+
+    const randomPassword = generatePassword();
+    customer.password = await hash(randomPassword);
+    customer.mustChangePassword = true;
+    customer.save();
+
+    // send email to user
+    sendMail(customer.email, "Password reset", messages.resetPassword(randomPassword));
+
+    return res.json({ code: 0, message: "A new password has been  sent to your email" });
   } catch (error) {
     logger.error(error);
     return res.json({ code: 10, message: "Operation processing error" });

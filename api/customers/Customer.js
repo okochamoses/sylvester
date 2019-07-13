@@ -20,10 +20,14 @@ const customerSchema = new mongoose.Schema({
   status: {
     type: Boolean,
     default: true
+  },
+  mustChangePassword: {
+    type: Boolean,
+    default: false
   }
 });
 
-customerSchema.pre("save", function(done) {
+customerSchema.pre("save", function hashPassword(done) {
   this.password = hash(this.password);
   done();
 });

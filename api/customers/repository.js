@@ -1,7 +1,7 @@
 const Customer = require("./Customer");
 
 const findByUsername = async username => {
-  const customer = await Customer.find({ username });
+  const customer = await Customer.findOne({ username });
   return customer;
 };
 
