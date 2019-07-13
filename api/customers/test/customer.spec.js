@@ -1,7 +1,7 @@
 const { assert } = require("chai");
 const Customer = require("../Customer");
 const validate = require("../customerValidation");
-const { hash, comparePassword } = require("../helper");
+const { hash, comparePassword, generatePassword } = require("../helper");
 
 describe("User signup", () => {
   let customer;
@@ -23,7 +23,7 @@ describe("User signup", () => {
     });
   });
 
-  describe("password hashing functions", () => {
+  describe("password functions", () => {
     let hashedPassword;
     before(() => {
       hashedPassword = hash(customer.password);
@@ -39,6 +39,12 @@ describe("User signup", () => {
     });
     it("should establish a password is same as hash", () => {
       assert(comparePassword(customer.password, hashedPassword));
+    });
+
+    it("should generate an alphanumeric password", () => {
+      const regex = RegExp(/^(?=\S*?[A-Z])(?=\S*?[a-z])(?=\S*?[0-9]).{6,}\S$/, "g");
+
+      assert(regex.test(generatePassword()), "Password validation failed");
     });
   });
 });
