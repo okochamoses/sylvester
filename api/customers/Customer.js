@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Address = require("./Address");
 
 const customerSchema = new mongoose.Schema({
   firstName: String,
@@ -25,7 +24,12 @@ const customerSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
-  addresses: [Address]
+  addresses: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Address"
+    }
+  ]
 });
 
 const Customer = mongoose.model("customers", customerSchema);

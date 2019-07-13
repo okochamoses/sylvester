@@ -25,10 +25,16 @@ const findAll = async () => {
   return customers;
 };
 
+const update = async (id, body) => {
+  const customer = await Customer.findOneAndUpdate({ _id: id }, { $set: body }, { new: true });
+  return customer;
+};
+
 module.exports = {
   findById,
   findByUsername,
   findByPhoneNumber,
   findByEmail,
-  findAll
+  findAll,
+  update
 };

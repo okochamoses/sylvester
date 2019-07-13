@@ -1,6 +1,8 @@
 const customerValidator = require("./validation");
 const Customer = require("./Customer");
+const Address = require("../addresses/Address");
 const customerRepo = require("./repository");
+const addressRepo = require("../addresses/repository");
 const logger = require("../../config/logger");
 const { hash, generatePassword, comparePassword, generateToken } = require("./helper");
 const { sendMail, messages } = require("../../config/mailer");
@@ -134,6 +136,62 @@ exports.authenticate = async (req, res) => {
     };
     const token = generateToken(payload);
     return res.json({ code: 0, message: "Operation Successful", data: token });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.update = async (req, res) => {
+  try {
+    const { body, user } = req;
+    // TODO: Check if username, password, phone are being updated and remove
+    const customer = await customerRepo.update(user.id, body);
+
+    if (!customer) {
+      return res.json({ code: 10, message: "Failed to update customer profile" });
+    }
+
+    return res.json({ code: 0, message: "Operation successful", data: customer });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.addAddress = async (req, res) => {
+  try {
+    const { body, user } = req;
+
+    const address = new Address(body);
+
+    const saved = await address.save();
+    if (!saved) {
+      return res.json({ code: 10, message: "Unable to save address" });
+    }
+    const customer = await customerRepo.findById(user.id);
+    customer.addresses.push(address);
+    customer.save();
+
+    return res.json({ code: 0, message: "Operation Successful", data: saved });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.updateAddress = async (req, res) => {
+  try {
+    const { body, user } = req;
+    const customer = await customerRepo.findById(user.id);
+
+    if (!customer.addresses.includes(body.id)) {
+      return res.json({ code: 10, message: "Address is not associated with user" });
+    }
+
+    const address = await addressRepo.update(body.id, body);
+
+    return res.json({ code: 0, message: "Operation Successful", data: address });
   } catch (error) {
     logger.error(error);
     return res.json({ code: 10, message: "Operation processing error" });
