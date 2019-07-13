@@ -3,6 +3,7 @@ const morgan = require("morgan");
 const dotenv = require("dotenv");
 
 dotenv.config();
+const passport = require("passport");
 const logger = require("./config/logger");
 const customer = require("./api/customers");
 
@@ -12,6 +13,7 @@ const indexRouter = require("./routes/index");
 
 const app = express();
 
+app.use(passport.initialize());
 app.use(morgan("combined", { stream: logger.stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
