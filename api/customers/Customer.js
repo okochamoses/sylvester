@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const Address = require("./Address");
 
 const customerSchema = new mongoose.Schema({
   firstName: String,
@@ -23,7 +24,8 @@ const customerSchema = new mongoose.Schema({
   mustChangePassword: {
     type: Boolean,
     default: false
-  }
+  },
+  addresses: [Address]
 });
 
 const Customer = mongoose.model("customers", customerSchema);
