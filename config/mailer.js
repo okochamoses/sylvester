@@ -1,24 +1,25 @@
 const nodemailer = require("nodemailer");
 const logger = require("./logger");
 const messages = require("./messages");
+const { MAIL_HOST, MAIL_PASSWORD, MAIL_PORT, MAIL_SENDER, MAIL_USER } = require("./keys");
 
 const sendMail = async (recipients, subject, message) => {
   try {
     // create reusable transporter object using the default SMTP transport
     const transporter = nodemailer.createTransport({
-      host: process.env.MAIL_HOST,
-      port: process.env.MAIL_PORT,
+      host: MAIL_HOST,
+      port: MAIL_PORT,
       tls: {
         rejectUnauthorized: false
       },
       auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASSWORD
+        user: MAIL_USER,
+        pass: MAIL_PASSWORD
       }
     });
 
     const info = await transporter.sendMail({
-      from: process.env.MAIL_SENDER,
+      from: MAIL_SENDER,
       to: recipients,
       subject,
       html: message

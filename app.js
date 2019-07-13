@@ -1,10 +1,11 @@
 const express = require("express");
 const morgan = require("morgan");
 const dotenv = require("dotenv");
+
+dotenv.config();
 const logger = require("./config/logger");
 const customer = require("./api/customers");
 
-dotenv.config();
 require("./config/db");
 
 const indexRouter = require("./routes/index");

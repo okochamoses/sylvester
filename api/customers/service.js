@@ -2,7 +2,7 @@ const customerValidator = require("./customerValidation");
 const Customer = require("./Customer");
 const customerRepo = require("./repository");
 const logger = require("../../config/logger");
-const { hash, generatePassword, comparePassword } = require("./helper");
+const { hash, generatePassword, comparePassword, generateToken } = require("./helper");
 const { sendMail, messages } = require("../../config/mailer");
 
 exports.registerCustomer = async (req, res) => {
@@ -105,6 +105,35 @@ exports.changePassword = async (req, res) => {
     customer.save();
 
     return res.json({ code: 0, message: "Operation Successful" });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.authenticate = async (req, res) => {
+  try {
+    // get user id
+    const { username, password } = req.body;
+    const customer = await customerRepo.findByUsername(username);
+
+    // isCustomer vailid
+    if (!customer) {
+      return res.json({ code: 30, message: "Username / Password validation failed" });
+    }
+
+    // compare password
+    if (!comparePassword(password, customer.password)) {
+      return res.json({ code: 30, message: "Username / Password validation failed" });
+    }
+    const payload = {
+      id: customer.id,
+      username: customer.username,
+      firstName: customer.firstName,
+      lastName: customer.lastName
+    };
+    const token = generateToken(payload);
+    return res.json({ code: 0, message: "Operation Successful", data: token });
   } catch (error) {
     logger.error(error);
     return res.json({ code: 10, message: "Operation processing error" });
