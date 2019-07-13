@@ -2,7 +2,7 @@ const customerValidator = require("./customerValidation");
 const Customer = require("./Customer");
 const customerRepo = require("./repository");
 const logger = require("../../config/logger");
-const { hash, generatePassword } = require("./helper");
+const { hash, generatePassword, comparePassword } = require("./helper");
 const { sendMail, messages } = require("../../config/mailer");
 
 exports.registerCustomer = async (req, res) => {
@@ -37,7 +37,7 @@ exports.registerCustomer = async (req, res) => {
     // check if customer email, username or phone already exists
 
     customer = new Customer(body);
-
+    customer.password = hash(body.password);
     customer.save();
 
     return res.json({ code: 0, message: "Operation Successful" });
@@ -81,6 +81,30 @@ exports.resetPassword = async (req, res) => {
     sendMail(customer.email, "Password reset", messages.resetPassword(randomPassword));
 
     return res.json({ code: 0, message: "A new password has been  sent to your email" });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.changePassword = async (req, res) => {
+  try {
+    const { username, oldPassword, newPassword } = req.body;
+
+    const customer = await customerRepo.findByUsername(username);
+    if (!customer) {
+      return res.json({ code: 10, message: "The username entered is not associated with any account" });
+    }
+
+    if (!comparePassword(oldPassword, customer.password)) {
+      return res.json({ code: 10, message: "You have entered an incorrect password" });
+    }
+
+    const password = hash(newPassword);
+    customer.password = password;
+    customer.save();
+
+    return res.json({ code: 0, message: "Operation Successful" });
   } catch (error) {
     logger.error(error);
     return res.json({ code: 10, message: "Operation processing error" });

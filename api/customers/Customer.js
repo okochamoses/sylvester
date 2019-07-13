@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const { hash } = require("./helper");
 
 const customerSchema = new mongoose.Schema({
   firstName: String,
@@ -25,11 +24,6 @@ const customerSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   }
-});
-
-customerSchema.pre("save", function hashPassword(done) {
-  this.password = hash(this.password);
-  done();
 });
 
 const Customer = mongoose.model("customers", customerSchema);
