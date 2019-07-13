@@ -1,4 +1,4 @@
-const customerValidator = require("./customerValidation");
+const customerValidator = require("./validation");
 const Customer = require("./Customer");
 const customerRepo = require("./repository");
 const logger = require("../../config/logger");

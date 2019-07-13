@@ -1,6 +1,6 @@
 const { assert } = require("chai");
 const Customer = require("../Customer");
-const validate = require("../customerValidation");
+const validate = require("../validation");
 const { hash, comparePassword, generatePassword } = require("../helper");
 
 describe("User signup", () => {
