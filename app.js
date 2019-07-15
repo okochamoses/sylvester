@@ -1,14 +1,26 @@
 const express = require("express");
-const logger = require("morgan");
+const morgan = require("morgan");
+const dotenv = require("dotenv");
+
+dotenv.config();
+const passport = require("passport");
+const logger = require("./config/logger");
+const customer = require("./api/customers");
+const services = require("./api/services");
+
+require("./config/db");
 
 const indexRouter = require("./routes/index");
 
 const app = express();
 
-app.use(logger("dev"));
+app.use(passport.initialize());
+app.use(morgan("combined", { stream: logger.stream }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-app.use("/", indexRouter);
+app.use("/api", indexRouter);
+app.use("/api/customers", customer.routes);
+app.use("/api/services", services.routes);
 
 module.exports = app;
