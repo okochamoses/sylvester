@@ -6,6 +6,7 @@ const addressRepo = require("../addresses/repository");
 const logger = require("../../config/logger");
 const { hash, generatePassword, comparePassword, generateToken } = require("./helper");
 const { sendMail, messages } = require("../../config/mailer");
+const { findLongLat } = require("../../config/maps");
 
 exports.registerCustomer = async (req, res) => {
   try {
@@ -164,6 +165,10 @@ exports.addAddress = async (req, res) => {
     const { body, user } = req;
 
     const address = new Address(body);
+    // get location from address
+    const { lng, lat } = await findLongLat(`${address.address}, ${address.lga} ${address.state}`);
+    address.longitude = lng;
+    address.latitude = lat;
 
     const saved = await address.save();
     if (!saved) {

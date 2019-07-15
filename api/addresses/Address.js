@@ -7,6 +7,8 @@ const addressSchema = new mongoose.Schema({
   lga: String,
   zip: String,
   landmark: String,
+  longitude: String,
+  latitude: String,
   default: { Boolean, default: false }
 });
 
