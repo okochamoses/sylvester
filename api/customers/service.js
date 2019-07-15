@@ -4,7 +4,7 @@ const Address = require("../addresses/Address");
 const customerRepo = require("./repository");
 const addressRepo = require("../addresses/repository");
 const logger = require("../../config/logger");
-const { hash, generatePassword, comparePassword, generateToken } = require("./helper");
+const { hash, generatePassword, comparePassword, generateToken } = require("../helper");
 const { sendMail, messages } = require("../../config/mailer");
 const { findLongLat } = require("../../config/maps");
 

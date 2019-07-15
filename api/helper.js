@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { JWT_EXPIRY_TOKEN, JWT_SECRET } = require("../../config/keys");
+const { JWT_EXPIRY_TOKEN, JWT_SECRET } = require("../config/keys");
 
 // TODO: Make all async
 const hash = (password, salt = bcrypt.genSaltSync(10)) => {
