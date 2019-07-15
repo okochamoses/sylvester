@@ -6,6 +6,7 @@ dotenv.config();
 const passport = require("passport");
 const logger = require("./config/logger");
 const customer = require("./api/customers");
+const services = require("./api/services");
 
 require("./config/db");
 
@@ -20,5 +21,6 @@ app.use(express.urlencoded({ extended: false }));
 
 app.use("/api", indexRouter);
 app.use("/api/customers", customer.routes);
+app.use("/api/services", services.routes);
 
 module.exports = app;

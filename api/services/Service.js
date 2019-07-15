@@ -8,6 +8,9 @@ const serviceSchema = new mongoose.Schema({
   fixed: {
     type: Boolean,
     default: true
+  },
+  price: {
+    type: Number
   }
 });
 
