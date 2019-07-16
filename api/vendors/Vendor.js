@@ -31,11 +31,11 @@ const vendorSchema = new mongoose.Schema({
   },
   service: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Service"
+    ref: "services"
   },
   address: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Address"
+    ref: "addresses"
   }
 });
 

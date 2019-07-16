@@ -32,10 +32,14 @@ exports.findAll = async () => {
 };
 
 exports.update = async (id, body) => {
-  const vendor = await Vendor.findOneAndUpdate(
-    { _id: id },
-    { $set: body },
-    { new: true }
-  );
+  const vendor = await Vendor.findOneAndUpdate({ _id: id }, { $set: body }, { new: true });
+  return vendor;
+};
+
+exports.get = async id => {
+  const vendor = await Vendor.findById(id)
+    .populate("service")
+    .populate("address")
+    .exec();
   return vendor;
 };

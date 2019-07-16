@@ -10,6 +10,7 @@ router.put("/", authenticate, vendorService.update);
 router.post("/authenticate", vendorService.authenticate);
 router.post("/password/reset", vendorService.resetPassword);
 router.post("/password/change", authenticate, vendorService.changePassword);
+router.get("/profile", authenticate, vendorService.profile);
 router.post("/address", authenticate, vendorService.addAddress);
 router.put("/address", authenticate, vendorService.updateAddress);
 
