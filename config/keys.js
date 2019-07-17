@@ -11,6 +11,7 @@ module.exports = {
   MAIL_PASSWORD: process.env.MAIL_PASSWORD,
 
   JWT_SECRET: process.env.JWT_SECRET,
+  JWT_SECRET_ADMIN: process.env.JWT_SECRET_ADMIN,
   JWT_EXPIRY_TOKEN: parseInt(process.env.JWT_TOKEN_EXPIRY, 10),
 
   MAPS_API_KEY: process.env.MAPS_API_KEY
