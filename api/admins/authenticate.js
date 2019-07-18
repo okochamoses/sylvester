@@ -17,7 +17,8 @@ passport.use(
     if (admin) {
       const payload = {
         id: admin.id,
-        username: admin.username
+        username: admin.username,
+        accessLevel: admin.accessLevel
       };
       return done(null, payload);
     }
