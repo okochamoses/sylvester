@@ -9,9 +9,9 @@ const authenticate = passport.authenticate("admin", { session: false });
 router.post("/", authenticate, adminService.register);
 router.get("/", [authenticate, superAdminGuard], adminService.getAdmins);
 router.post("/authenticate", adminService.authenticate);
-// router.admin("/profile", authenticate, adminService.viewProfile);
-// fix prices for
-// enable/disable customers and vendors
-//
+router.get("/profile", authenticate, adminService.viewProfile);
+router.get("/:id/enable", [authenticate, superAdminGuard], adminService.enable);
+router.get("/:id/disable", [authenticate, superAdminGuard], adminService.disable);
+// TODO: fix prices for requests without username
 
 module.exports = router;

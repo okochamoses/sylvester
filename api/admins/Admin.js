@@ -6,6 +6,10 @@ const adminSchema = new mongoose.Schema({
   email: String,
   username: String,
   password: String,
+  isActive: {
+    type: Boolean,
+    default: true
+  },
   accessLevel: {
     type: String,
     enum: ["super-admin", "admin", "creator", "view"],

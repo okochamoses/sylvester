@@ -64,6 +64,11 @@ exports.authenticate = async (req, res) => {
     if (!comparePassword(password, admin.password)) {
       return res.json({ code: 30, message: "Username / Password validation failed" });
     }
+
+    // check user isActive is active
+    if (admin.isActive === false) {
+      return res.json({ code: 30, message: "Please contact the admin to enable our account" });
+    }
     const payload = {
       id: admin.id,
       username: admin.username,
@@ -73,6 +78,43 @@ exports.authenticate = async (req, res) => {
     };
     const token = generateToken(payload, "admin");
     return res.json({ code: 0, message: "Operation Successful", data: token });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.viewProfile = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const admin = await adminRepo.findById(id);
+    return res.json({ code: 0, message: "Operation Successful", data: admin });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.enable = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const admin = await adminRepo.findById(id);
+    admin.isActive = true;
+    const saved = await admin.save();
+    return res.json({ code: 0, message: "Operation Successful", data: saved });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.disable = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const admin = await adminRepo.findById(id);
+    admin.isActive = false;
+    const saved = await admin.save();
+    return res.json({ code: 0, message: "Operation Successful", data: saved });
   } catch (error) {
     logger.error(error);
     return res.json({ code: 10, message: "Operation processing error" });
