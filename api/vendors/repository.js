@@ -43,3 +43,18 @@ exports.get = async id => {
     .exec();
   return vendor;
 };
+
+exports.getVendorsByService = async id => {
+  const vendors = await Vendor.find({ service: id, status: true });
+  return vendors;
+};
+
+exports.getVendorsByServiceAndState = async (id, state) => {
+  const vendors = await Vendor.find({ service: id, status: true })
+    .populate({
+      path: "address",
+      match: { state }
+    })
+    .exec();
+  return vendors;
+};

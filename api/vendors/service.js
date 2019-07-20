@@ -6,7 +6,7 @@ const vendorValidator = require("./validation");
 const logger = require("../../config/logger");
 const { findLongLat } = require("../../config/maps");
 const { sendMail, messages } = require("../../config/mailer");
-const { hash, generatePassword, comparePassword, generateToken } = require("../helper");
+const { hash, generatePassword, comparePassword, generateToken, getDistanceFromLatLonInKm } = require("../helper");
 
 exports.register = async (req, res) => {
   try {
@@ -212,6 +212,75 @@ exports.profile = async (req, res) => {
   try {
     const vendor = await vendorRepo.get(req.user.id);
     return res.json({ code: 0, message: "Operation Successful", data: vendor });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.getVendorsByService = async (req, res) => {
+  try {
+    const vendors = await vendorRepo.getVendorsByService(req.params.id);
+    return res.json({ code: 0, message: "Operation Successful", data: vendors });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+const calculateNearestLocations = (location, vendors) => {
+  const rankings = {};
+  vendors.forEach(vendor => {
+    const { longitude, latitude } = vendor.address;
+    const rank = getDistanceFromLatLonInKm(
+      parseFloat(location.lat),
+      parseFloat(location.long),
+      parseFloat(latitude),
+      parseFloat(longitude)
+    );
+    if (rankings[rank] !== null) {
+      rankings[rank] = vendor;
+    } else {
+      const alteredRank = rank + Math.floor(Math.random() * 100000);
+      rankings[alteredRank] = vendor;
+    }
+  });
+
+  const orderedVendors = [];
+  Object.keys(rankings)
+    .sort()
+    .forEach(key => {
+      orderedVendors.push(rankings[key]);
+    });
+  return orderedVendors;
+};
+
+exports.getVendorsByServiceAndLocation = async (req, res) => {
+  try {
+    const { id, state } = req.params;
+    const { long, lat } = req.query;
+    // if(long === undefined || lat === undefined) {
+
+    // }
+    const vendors = await vendorRepo.getVendorsByServiceAndState(id, state);
+    if (long === undefined || lat === undefined) {
+      return res.json({ code: 0, description: "state only", data: vendors });
+    }
+    const vend = calculateNearestLocations({ long, lat }, vendors);
+
+    // filter states by lga if available
+    return res.json({ code: 0, description: "state and latlong", data: vend });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.getVendor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const vendor = await vendorRepo.get(id);
+    return res.json({ code: 0, description: "state and latlong", data: vendor });
   } catch (error) {
     logger.error(error);
     return res.json({ code: 10, message: "Operation processing error" });
