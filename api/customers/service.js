@@ -15,7 +15,8 @@ exports.registerCustomer = async (req, res) => {
     const { errors, isEmpty } = customerValidator(body);
 
     if (!isEmpty) {
-      return res.json({ code: 0, message: errors[0] });
+      const err = Object.keys(errors)[0];
+      return res.json({ code: 10, message: errors[err] });
     }
 
     let customer;
