@@ -9,9 +9,9 @@ const serviceSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
-  price: {
-    type: Number
-  }
+  price: Number,
+  description: String,
+  image: String
 });
 
 module.exports = mongoose.model("services", serviceSchema);

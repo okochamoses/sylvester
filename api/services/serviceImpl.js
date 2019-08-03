@@ -6,8 +6,8 @@ exports.getByRange = async (req, res) => {
   try {
     const { query } = req;
     let { page, size } = query;
-    page = page === undefined ? 1 : page;
-    size = size === undefined ? 1 : size;
+    page = page === undefined ? null : page;
+    size = size === undefined ? null : size;
     const record = (page - 1) * size;
     const services = await serviceRepo.findByRange(parseInt(record, 10), parseInt(size, 10));
     const count = await serviceRepo.count();
