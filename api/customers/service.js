@@ -61,6 +61,17 @@ exports.getCustomers = async (req, res) => {
   }
 };
 
+exports.getProfile = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const customer = await customerRepo.getProfile(id);
+    return res.json({ code: 0, data: customer });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
 exports.resetPassword = async (req, res) => {
   try {
     const { body } = req;

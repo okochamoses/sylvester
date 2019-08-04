@@ -27,7 +27,7 @@ const customerSchema = new mongoose.Schema({
   addresses: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Address"
+      ref: "addresses"
     }
   ]
 });
