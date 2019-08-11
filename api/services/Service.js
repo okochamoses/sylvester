@@ -5,13 +5,14 @@ const serviceSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  fixed: {
-    type: Boolean,
-    default: true
-  },
-  price: Number,
   description: String,
-  image: String
+  image: String,
+  subServices: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "subServices"
+    }
+  ]
 });
 
 module.exports = mongoose.model("services", serviceSchema);

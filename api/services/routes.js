@@ -7,5 +7,7 @@ const adminAuth = passportAdmin.authenticate("admin", { session: false });
 
 router.get("/", service.getByRange);
 router.post("/", [adminAuth, superAdminGuard], service.add); // TODO: Add admin auth guard to route
+router.post("/:serviceid/subservices", [adminAuth, superAdminGuard], service.addSubService);
+router.delete("/:serviceid/subservices/:id", [adminAuth, superAdminGuard], service.deleteSubService);
 
 module.exports = router;
