@@ -30,11 +30,17 @@ const update = async (id, body) => {
   return customer;
 };
 
+const getProfile = async id => {
+  const customer = await Customer.findById(id).populate("addresses");
+  return customer;
+};
+
 module.exports = {
   findById,
   findByUsername,
   findByPhoneNumber,
   findByEmail,
   findAll,
-  update
+  update,
+  getProfile
 };

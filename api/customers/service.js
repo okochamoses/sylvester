@@ -4,7 +4,7 @@ const Address = require("../addresses/Address");
 const customerRepo = require("./repository");
 const addressRepo = require("../addresses/repository");
 const logger = require("../../config/logger");
-const { hash, generatePassword, comparePassword, generateToken } = require("./helper");
+const { hash, generatePassword, comparePassword, generateToken } = require("../helper");
 const { sendMail, messages } = require("../../config/mailer");
 const { findLongLat } = require("../../config/maps");
 
@@ -15,7 +15,8 @@ exports.registerCustomer = async (req, res) => {
     const { errors, isEmpty } = customerValidator(body);
 
     if (!isEmpty) {
-      return res.json({ code: 0, message: errors });
+      const err = Object.keys(errors)[0];
+      return res.json({ code: 10, message: errors[err] });
     }
 
     let customer;
@@ -54,6 +55,17 @@ exports.getCustomers = async (req, res) => {
   try {
     const customers = await customerRepo.findAll();
     return res.json({ code: 0, data: customers });
+  } catch (error) {
+    logger.error(error);
+    return res.json({ code: 10, message: "Operation processing error" });
+  }
+};
+
+exports.getProfile = async (req, res) => {
+  try {
+    const { id } = req.user;
+    const customer = await customerRepo.getProfile(id);
+    return res.json({ code: 0, data: customer });
   } catch (error) {
     logger.error(error);
     return res.json({ code: 10, message: "Operation processing error" });

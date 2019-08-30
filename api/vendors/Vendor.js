@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 
-const customerSchema = new mongoose.Schema({
+const vendorSchema = new mongoose.Schema({
   firstName: String,
   lastName: String,
+  businessName: String,
   password: String,
   username: {
     type: String,
@@ -20,18 +21,24 @@ const customerSchema = new mongoose.Schema({
     type: Boolean,
     default: true
   },
+  internal: {
+    type: String,
+    default: false
+  },
   mustChangePassword: {
     type: Boolean,
     default: false
   },
-  addresses: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "addresses"
-    }
-  ]
+  service: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "services"
+  },
+  address: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "addresses"
+  }
 });
 
-const Customer = mongoose.model("customers", customerSchema);
+const Vendor = mongoose.model("vendors", vendorSchema);
 
-module.exports = Customer;
+module.exports = Vendor;
